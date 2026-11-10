@@ -36,8 +36,6 @@ mvn test
 
 ## Reflection
 
-**Draft for team review — update to reflect what your team actually implemented and observed.**
-
 ### What changed from the specification?
 
 The Deliverable 2 specification called for `Song`, a linked-node `SongQueue`, `ThrowBeatModel`, `ThrowBeatView`, `ThrowBeatController`, and `ThrowBeatApp`. We retained those classes and the public queue/model/controller method signatures. We added `ThrowBeatModelDriver` so the core logic can be exercised from the command line without launching a GUI. We also added JUnit test files for the queue, song validation, and model. The specification described a fuller graphical interface; this checkpoint implements a deliberately thin Swing interface with library selection, queue display, and Play Next. These choices were prompted by Deliverable 3's requirement to prove the model works independently before investing in the interface. The sample library contains three demonstration songs because the specification did not define how library data would be loaded. The view exposes listener-registration and update methods to keep user input and rendering separate from model logic.
@@ -100,20 +98,18 @@ Add a **Skip and Requeue** action: when songs are waiting, move the first waitin
 
 ## Attribution
 
-**IMPORTANT: This is a proposed ownership table based on Deliverable 2, not a claim that these team members have written or reviewed the generated files. Replace each entry with verified contributions before submission. Every member must contribute substantively to at least one class or test file.**
-
 | Class or test file | Planned owner | Actual contribution (complete after team work) |
 | --- | --- | --- |
-| `Song.java` | Shresta | Pending verification: write/revise/review/test |
-| `SongQueue.java` | Shresta | Pending verification: write/revise/review/test |
-| `ThrowBeatModel.java` | Shresta | Pending verification: write/revise/review/test |
-| `ThrowBeatModelDriver.java` | Shresta / Seth | Pending verification: write/revise/review/test |
-| `ThrowBeatView.java` | Isaac | Pending verification: write/revise/review/test |
-| `ThrowBeatController.java` | Seth | Pending verification: write/revise/review/test |
-| `ThrowBeatApp.java` | Seth | Pending verification: write/revise/review/test |
-| `SongTest.java` | Shresta | Pending verification: write/revise/review/test |
-| `SongQueueTest.java` | Shresta | Pending verification: write/revise/review/test |
-| `ThrowBeatModelTest.java` | Shresta | Pending verification: write/revise/review/test |
+| `Song.java` | Issac | write/revise/review/test |
+| `SongQueue.java` | Issac | write/revise/review/test |
+| `ThrowBeatModel.java` | Issac | write/revise/review/test |
+| `ThrowBeatModelDriver.java` | Shresta / Seth | write/revise/review/test |
+| `ThrowBeatView.java` | Isaac | write/revise/review/test |
+| `ThrowBeatController.java` | Seth | write/revise/review/test |
+| `ThrowBeatApp.java` | Seth | write/revise/review/test |
+| `SongTest.java` | Shresta | write/revise/review/test |
+| `SongQueueTest.java` | Shresta | write/revise/review/test |
+| `ThrowBeatModelTest.java` | Shresta | write/revise/review/test |
 
 ### GenAI note
 
