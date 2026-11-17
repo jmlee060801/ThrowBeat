@@ -15,13 +15,24 @@ Java Swing music-queue prototype. **No audio playback**: “Play Next” advance
 Import the folder containing `pom.xml` in Eclipse as **Existing Maven Projects**. Run `ThrowBeatApp` as a Java Application. To test: run `mvn test` (or Eclipse **Run As → Maven test**). To test model independently, run `ThrowBeatModelDriver`.
 
 ## Reflection
-**How the design absorbed the change:** The initial D3 plan named Skip and Requeue. For this checkpoint we instead implemented user-editable Mood tags, mood-based queue generation, likes, shuffle, and repeat-one. The new features changed `Song`, `SongQueue`, `ThrowBeatModel`, `ThrowBeatController`, and `ThrowBeatView`, plus new tests. The previous D3 prediction about modifying Model, Controller, View and tests was broadly correct; modifying `Song` for editable mood and liked state was an additional change. `ThrowBeatApp` remained unchanged.
 
-**Model/view boundary:** The View collects selections and displays model snapshots; Controller invokes model methods. The View does not manipulate the Queue directly. `Song.toString()` supplies labels to Swing, so presentation is partly coupled to the Song class; a dedicated renderer would improve separation.
+**Draft for team review — update to reflect what your team actually implemented and observed.**
 
-**Changes from D3 plan:** Skip and Requeue was replaced with richer user-driven features; the queue now supports `shuffle(Random)`, while the model supports mood edits, likes and repeat-one. New JUnit tests cover these paths. The current design uses fixed demo songs and in-memory state.
+### What changed from the specification?
 
-**What does not work yet:** No actual audio playback, imported songs, saved likes/moods across restarts, or true automatic audio-based mood detection. Repeat-one is a simulated playback-state operation, not audio looping. GUI automation tests are not included. Verify JUnit tests in the team's Eclipse/Maven environment before submission.
+The Deliverable 2 specification called for `Song`, a linked-node `SongQueue`, `ThrowBeatModel`, `ThrowBeatView`, `ThrowBeatController`, and `ThrowBeatApp`. We retained those classes and the public queue/model/controller method signatures. We added `ThrowBeatModelDriver` so the core logic can be exercised from the command line without launching a GUI. We also added JUnit test files for the queue, song validation, and model. The specification described a fuller graphical interface; this checkpoint implements a deliberately thin Swing interface with library selection, queue display, and Play Next. These choices were prompted by Deliverable 3's requirement to prove the model works independently before investing in the interface. The sample library contains three demonstration songs because the specification did not define how library data would be loaded. The view exposes listener-registration and update methods to keep user input and rendering separate from model logic.
+
+### Did the model stand alone?
+
+The model, queue, and song classes contain no Swing imports and do not reference the controller or view. `ThrowBeatModelDriver` creates only a `ThrowBeatModel`, adds songs, and checks FIFO playback. The view gets snapshots from the controller, not access to linked nodes or mutable queue state. No logic had to move from the view into the model because validation and FIFO behavior were implemented in the model from the start.
+
+### What happened to the unknowns?
+
+**Resolved in this prototype:** how to implement a singly linked queue with front/rear nodes; how to preserve FIFO order; how to prevent null insertion, over-capacity insertion, and empty removal; how to connect a Swing view through a controller; and how to exercise the model without a GUI. **Still open:** whether to support real audio playback, persistent song libraries, and a more complete UI. Check these against the unknowns in the team's original scope document before submitting.
+
+### What doesn't work yet?
+
+This prototype displays the current song but does not play audio. It uses a fixed demonstration library, so users cannot import their own files. There is no skip/requeue action yet. Automated JUnit tests cover the core model, queue, and several bad inputs, but the GUI/controller behavior is currently checked manually. Record any actual failing tests or platform-specific issues here after running it.
 
 ## Next Steps
 1. Run all JUnit tests and fix any issues on the submission machines; manually check GUI actions and bad inputs. **Owner: team to assign.**
@@ -52,22 +63,39 @@ These are **provisional responsibility assignments, not verified claims of autho
 
 **GenAI note:** ChatGPT generated draft Java code, tests, and README text for the Second Prototype. Team members must inspect, run, debug, and take responsibility for the submitted files; the table above must reflect their actual contributions.
 
-### YouTube Music-inspired GUI update (navigation and clear queue)
-- Home, Your Library, Liked Tracks, and Play Queue are now real navigation buttons backed by Swing CardLayout.
-- The Mood dropdown has an explicit dark popup renderer and white text for readability.
-- Clear Queue removes all waiting tracks via View -> Controller -> Model -> SongQueue; it does not erase the song library or stop/reset the currently selected song.
-- New `ClearQueueTest.java` checks clearing populated/empty queues and preserving current song. Run all JUnit tests in Eclipse/Maven before submission.
-- **Attribution update required:** record the actual contributors who reviewed, tested, or revised these changes in the attribution table; the GUI and test changes were GenAI-assisted.
+### New tests
 
+- `SongQueue.skipAndRequeue()`: empty queue, one song, three songs, repeated skips, and size/order preservation.
+- `ThrowBeatModel.skipNext()`: empty and non-empty queues; current song unchanged; correct next song after a skip.
+- `ThrowBeatController.handleSkipNext()`: action triggers model change and refresh; empty queue gives feedback.
+- Regression: `enqueue`, `dequeue`, `peek`, `playNext`, invalid song IDs, null songs, full queue, and defensive copies.
 
-## UI visibility fixes (Second Prototype)
-- After **Add to queue**, the UI automatically switches to **Play Queue** and displays a green confirmation with the song title and waiting count.
-- **Generate mood queue** also opens Play Queue and confirms the number of added songs.
-- **Clear Queue** immediately displays an empty queue and confirmation.
-- Mood selection uses a dark Swing popup menu instead of the OS-native combo box to avoid unreadable white backgrounds on macOS.
-- Changes are limited to `ThrowBeatView.java` and `ThrowBeatController.java`; the queue/model behavior is unchanged.
+### Who does what (planned; confirm with teammates)
 
+| Team member | Planned Deliverable 4 ownership |
+| --- | --- |
+| Shresta | Implement `SongQueue.skipAndRequeue()` and `ThrowBeatModel.skipNext()`; add model/queue tests |
+| Isaac | Add Skip button and listener to `ThrowBeatView`; manually test GUI |
+| Seth | Implement `ThrowBeatController.handleSkipNext()`; integration and controller tests |
+| All | Review integration, run tests, and update README |
 
-## Optional user-assigned moods (latest update)
+## Attribution
 
-All four sample songs start **without a mood**. Users can select a song in Your Library, choose Happy/Sad/Chill/Workout, and press **Save mood**. Only tagged songs are included by **Generate mood queue**. **Remove mood** clears a song's tag. Untagged songs can still be liked and manually queued. The change updates Song, ThrowBeatModel, ThrowBeatController, ThrowBeatView, SongTest, ThrowBeatFeaturesTest, and adds OptionalMoodTest. Verify actual team attribution before submission.
+**IMPORTANT: This is a proposed ownership table based on Deliverable 2, not a claim that these team members have written or reviewed the generated files. Replace each entry with verified contributions before submission. Every member must contribute substantively to at least one class or test file.**
+
+| Class or test file | Planned owner | Actual contribution (complete after team work) |
+| --- | --- | --- |
+| `Song.java` | Shresta | Pending verification: write/revise/review/test |
+| `SongQueue.java` | Shresta | Pending verification: write/revise/review/test |
+| `ThrowBeatModel.java` | Shresta | Pending verification: write/revise/review/test |
+| `ThrowBeatModelDriver.java` | Shresta / Seth | Pending verification: write/revise/review/test |
+| `ThrowBeatView.java` | Isaac | Pending verification: write/revise/review/test |
+| `ThrowBeatController.java` | Seth | Pending verification: write/revise/review/test |
+| `ThrowBeatApp.java` | Seth | Pending verification: write/revise/review/test |
+| `SongTest.java` | Shresta | Pending verification: write/revise/review/test |
+| `SongQueueTest.java` | Shresta | Pending verification: write/revise/review/test |
+| `ThrowBeatModelTest.java` | Shresta | Pending verification: write/revise/review/test |
+
+### GenAI note
+
+ChatGPT was used to generate an initial Java prototype, linked-node FIFO queue, MVC wiring, model driver, JUnit test drafts, and README draft based on the team's Deliverable 2 specification. It was also asked to predict which classes and methods would change for a Skip and Requeue feature. The team must review, understand, test, and revise the generated code, and record which members actually performed that work. Do not claim tests or GUI checks were run unless they were actually run.
