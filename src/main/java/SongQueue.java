@@ -33,6 +33,15 @@ public class SongQueue {
         if (isEmpty()) throw new NoSuchElementException("Queue is empty");
         return front.data;
     }
+    // Fisher-Yates shuffle, then rebuild the linked queue. No new songs are created.
+    public void shuffle(java.util.Random random) {
+        if (random == null) throw new IllegalArgumentException("Random required");
+        ArrayList<Song> songs = toArrayList();
+        java.util.Collections.shuffle(songs, random);
+        front = null; rear = null; size = 0;
+        for (Song song : songs) enqueue(song);
+    }
+    public void clear() { front = null; rear = null; size = 0; }
     public boolean isEmpty() { return size == 0; }
     public int size() { return size; }
     public ArrayList<Song> toArrayList() {

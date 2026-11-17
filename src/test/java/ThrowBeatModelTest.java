@@ -15,6 +15,23 @@ class ThrowBeatModelTest {
         assertEquals(1, model.getCurrentSong().getSongID());
         assertTrue(model.isQueueEmpty());
     }
+    @Test void moodQueueAddsOnlyMatchingSongsAndPreservesFIFO() {
+        ThrowBeatModel model = new ThrowBeatModel();
+        assertTrue(model.addSongToQueue(2));
+        assertEquals(1, model.addSongsByMood(Mood.HAPPY));
+        assertEquals(0, model.addSongsByMood(Mood.WORKOUT));
+        assertEquals(2, model.getQueueSongs().size());
+        assertEquals(2, model.playNext().getSongID());
+        assertEquals(1, model.playNext().getSongID());
+    }
+    @Test void moodQueueBadInputAndCapacity() {
+        ThrowBeatModel model = new ThrowBeatModel();
+        assertEquals(0, model.addSongsByMood(null));
+        assertTrue(model.isQueueEmpty());
+        for (int i=0; i<SongQueue.MAX_CAPACITY; i++) assertTrue(model.addSongToQueue(1));
+        assertEquals(0, model.addSongsByMood(Mood.HAPPY));
+        assertEquals(SongQueue.MAX_CAPACITY, model.getQueueSongs().size());
+    }
     @Test void unknownIdAndDefensiveCopies() {
         ThrowBeatModel model = new ThrowBeatModel();
         assertNull(model.findSongByID(-1));

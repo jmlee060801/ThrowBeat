@@ -7,9 +7,12 @@ class SongTest {
         assertEquals(1, song.getSongID());
         assertEquals("Title", song.getTitle());
         assertEquals("Artist", song.getArtist());
+        assertNull(song.getMood());
+        assertEquals(Mood.HAPPY, new Song(2, "H", "A", Mood.HAPPY).getMood());
     }
     @Test void rejectsBadFields() {
         assertThrows(IllegalArgumentException.class, () -> new Song(0, "T", "A"));
+        assertNull(new Song(1, "T", "A", null).getMood());
         assertThrows(IllegalArgumentException.class, () -> new Song(1, null, "A"));
         assertThrows(IllegalArgumentException.class, () -> new Song(1, "  ", "A"));
         assertThrows(IllegalArgumentException.class, () -> new Song(1, "T", " "));
